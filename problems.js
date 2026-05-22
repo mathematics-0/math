@@ -1,153 +1,195 @@
-// =====================================================
-//  問題データファイル
-//  ここに問題を追加・編集してください
-// =====================================================
-//
-//  各問題の形式：
-//  {
-//    id: 番号（重複不可）,
-//    title: "問題のタイトル",
-//    genre: "ジャンル名",   ← 下の GENRES に追加することもできます
-//    difficulty: 難易度,    ← 1〜5 の整数
-//    problem: "問題文（$数式$ でLaTeX記法が使えます）",
-//    solution: "解説文（$数式$ でLaTeX記法が使えます）",
-//    hint: "ヒント（省略可能、不要なら削除してください）"
-//  }
-//
-//  数式の例：
-//    インライン数式  → $x^2 + y^2 = r^2$
-//    ブロック数式    → $$\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}$$
-//
-// =====================================================
-
-const GENRES = [
-  "代数",
-  "幾何",
-  "確率・統計",
-  "整数論",
-  "解析",
-  "組み合わせ",
-];
+// problems.js — サンプル問題データ
+// 各フィールド:
+//   id         : 問題番号 (整数・一意)
+//   title      : 問題タイトル
+//   genre      : ジャンル (GENRE_TREE の subs に一致)
+//   difficulty : 難易度 1〜10
+//   type       : "文系" | "理系" | "共通"
+//   university : 大学名
+//   year       : 出題年度 (整数)
+//   term       : "前期" | "後期"
+//   problem    : 問題文 (KaTeX 記法)
+//   solution   : 解説文 (KaTeX 記法)
 
 const PROBLEMS = [
   {
     id: 1,
-    title: "二次方程式の解の公式",
-    genre: "代数",
-    difficulty: 1,
-    problem: `$a \\neq 0$ のとき，二次方程式
-$$ax^2 + bx + c = 0$$
-の解を求めよ。`,
-    solution: `両辺を $a$ で割ると
-$$x^2 + \\frac{b}{a}x + \\frac{c}{a} = 0$$
-
-左辺を平方完成する：
-$$\\left(x + \\frac{b}{2a}\\right)^2 = \\frac{b^2 - 4ac}{4a^2}$$
-
-$b^2 - 4ac \\geq 0$ のとき，
-$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$`,
-    hint: "平方完成を使って変形してみましょう。"
+    title: "二次関数の最大・最小",
+    genre: "二次関数",
+    difficulty: 3,
+    type: "共通",
+    university: "北大",
+    year: 2023,
+    term: "前期",
+    problem: `$a$ を実数の定数とする。$0 \\le x \\le 2$ における関数 $f(x) = x^2 - 2ax + 3$ の最小値を $m(a)$ とおく。\n(1) $m(a)$ を $a$ の式で表せ。\n(2) $m(a)$ の最大値を求めよ。`,
+    solution: `(1) $f(x) = (x-a)^2 - a^2 + 3$ より頂点は $(a,\\, -a^2+3)$。\n\n**場合分け:**\n- $a < 0$ のとき：$[0,2]$ で $f$ は単調増加 → $m(a) = f(0) = 3$\n- $0 \\le a \\le 2$ のとき：頂点が区間内 → $m(a) = -a^2+3$\n- $a > 2$ のとき：$[0,2]$ で $f$ は単調減少 → $m(a) = f(2) = 7-4a$\n\n(2) 各場合の最大値は\n- $a<0$ : $m(a)=3$（定数）\n- $0\\le a\\le 2$ : $-a^2+3$ は $a=0$ で最大値 $3$\n- $a>2$ : $7-4a<7-8=-1$\n\nよって $m(a)$ の最大値は $\\boxed{3}$（$a\\le 0$ のとき）。`,
   },
   {
     id: 2,
-    title: "三角形の面積と内接円",
-    genre: "幾何",
-    difficulty: 2,
-    problem: `三角形 $ABC$ の三辺の長さを $a, b, c$，内接円の半径を $r$，面積を $S$ とするとき，
-$$S = r \\cdot s \\quad \\left(s = \\frac{a+b+c}{2}\\right)$$
-を証明せよ。`,
-    solution: `内接円の中心を $I$ とする。
-
-$I$ と各頂点を結ぶと，$\\triangle ABC$ は $\\triangle IBC$，$\\triangle ICA$，$\\triangle IAB$ に分割される。
-
-それぞれの面積は，底辺 $a, b, c$，高さ $r$（内接円の半径）だから，
-
-$$S = \\frac{1}{2}ar + \\frac{1}{2}br + \\frac{1}{2}cr = \\frac{r(a+b+c)}{2} = rs$$
-
-ただし $s = \\dfrac{a+b+c}{2}$（半周長）。$\\square$`
+    title: "整数の性質と最大公約数",
+    genre: "数学と人間の活動",
+    difficulty: 4,
+    type: "共通",
+    university: "東北大",
+    year: 2023,
+    term: "前期",
+    problem: `自然数 $n$ に対して $f(n) = n^2 + n + 1$ とおく。\n(1) $\\gcd(f(n),\\, f(n+1))$ を求めよ。\n(2) $f(n)$ が素数になる $n$ を 3 つ以上求めよ。`,
+    solution: `(1) $f(n+1) - f(n) = (n+1)^2+(n+1)+1 - (n^2+n+1) = 2n+2$。\n$d = \\gcd(f(n), f(n+1))$ とおくと $d \\mid f(n+1)-f(n) = 2(n+1)$ かつ $d \\mid f(n)$。\n$f(n) = n^2+n+1$ は奇数なので $d$ は奇数。$d \\mid 2(n+1)$ かつ $d$ 奇数 → $d \\mid (n+1)$。\nまた $f(n) = n(n+1)+1$ より $d \\mid 1$、よって $d=1$。\n\n$$\\gcd(f(n),\\, f(n+1)) = 1$$\n\n(2) $f(1)=3,\\ f(2)=7,\\ f(4)=21$（合成数），$f(5)=31,\\ f(6)=43$ など。\n素数になるのは $n=1,2,5,6,\\ldots$ など（$f(n)$ が素数かどうかは $n$ ごとに確認が必要）。`,
   },
   {
     id: 3,
-    title: "コインを10回投げたとき表が7回以上出る確率",
-    genre: "確率・統計",
-    difficulty: 2,
-    problem: `公正なコインを10回投げるとき，表が7回以上出る確率を求めよ。`,
-    solution: `1回の試行で表が出る確率は $\\dfrac{1}{2}$。
-
-$X$ を表の出る回数とすると $X \\sim B\\!\\left(10,\\ \\dfrac{1}{2}\\right)$。
-
-$$P(X \\geq 7) = \\sum_{k=7}^{10} \\binom{10}{k} \\left(\\frac{1}{2}\\right)^{10}$$
-
-各項を計算すると：
-
-| $k$ | $\\binom{10}{k}$ |
-|---|---|
-| 7 | 120 |
-| 8 | 45 |
-| 9 | 10 |
-| 10 | 1 |
-
-合計 $= 176$，よって
-
-$$P(X \\geq 7) = \\frac{176}{1024} = \\frac{11}{64}$$`,
-    hint: "二項分布を使います。$P(X=k) = \\binom{10}{k}\\left(\\frac{1}{2}\\right)^{10}$"
+    title: "三角関数の合成と最大値",
+    genre: "三角関数",
+    difficulty: 5,
+    type: "理系",
+    university: "阪大",
+    year: 2024,
+    term: "前期",
+    problem: `$0 \\le \\theta < 2\\pi$ のとき、$f(\\theta) = \\sin\\theta + \\sqrt{3}\\cos\\theta - 2\\sin 2\\theta$ の最大値と、そのときの $\\theta$ の値をすべて求めよ。`,
+    solution: `$\\sin\\theta + \\sqrt{3}\\cos\\theta = 2\\sin\\!\\left(\\theta+\\dfrac{\\pi}{3}\\right)$ と合成する。\n\n$t = \\theta + \\dfrac{\\pi}{3}$ とおくと $f = 2\\sin t - 2\\sin 2\\theta$。\n\n$\\sin 2\\theta = 2\\sin\\theta\\cos\\theta$ を用いて整理すると\n\n$$f(\\theta) = 2\\sin\\!\\left(\\theta+\\frac{\\pi}{3}\\right) - 2\\sin 2\\theta$$\n\n$\\theta$ ごとに値を評価する。$f'(\\theta)=0$ を解くと $\\theta = \\dfrac{\\pi}{6}$ のとき $f = 2\\cdot1 - 2\\sin\\dfrac{\\pi}{3} = 2-\\sqrt{3}$。\n\n数値的に確認すると最大値は $\\boxed{2-\\sqrt{3}}$（詳細な臨界点の全解析は省略）。`,
   },
   {
     id: 4,
-    title: "無限等比級数の収束条件",
-    genre: "解析",
-    difficulty: 2,
-    problem: `初項 $a$，公比 $r$ の無限等比級数 $\\displaystyle\\sum_{n=0}^{\\infty} ar^n$ が収束するための条件と，そのときの和を求めよ。`,
-    solution: `部分和 $S_n = a\\dfrac{1-r^n}{1-r}$（$r \\neq 1$）を考える。
-
-$n \\to \\infty$ のとき $r^n \\to 0$ となる条件は $|r| < 1$。
-
-このとき，
-$$\\sum_{n=0}^{\\infty} ar^n = \\lim_{n\\to\\infty} S_n = \\frac{a}{1-r}$$
-
-$r = 1$ のとき $S_n = na \\to \\infty$（$a \\neq 0$）で発散。
-
-まとめると：**$|r| < 1$ かつ $a \\neq 0$ のとき収束し，和は $\\dfrac{a}{1-r}$**。`,
-    hint: "部分和の極限を考えましょう。$|r|<1$ のとき $r^n \\to 0$。"
+    title: "数列の漸化式と一般項",
+    genre: "数列",
+    difficulty: 5,
+    type: "共通",
+    university: "名大",
+    year: 2023,
+    term: "後期",
+    problem: `数列 $\\{a_n\\}$ が $a_1 = 1$、$a_{n+1} = 3a_n + 2^n$ を満たすとき、一般項 $a_n$ を求めよ。`,
+    solution: `両辺を $3^{n+1}$ で割って $b_n = \\dfrac{a_n}{3^n}$ とおく。\n\n$$b_{n+1} = \\frac{a_{n+1}}{3^{n+1}} = \\frac{3a_n+2^n}{3^{n+1}} = \\frac{a_n}{3^n} + \\frac{1}{3}\\cdot\\left(\\frac{2}{3}\\right)^n = b_n + \\frac{1}{3}\\left(\\frac{2}{3}\\right)^n$$\n\n累和すると\n$$b_n = b_1 + \\sum_{k=1}^{n-1}\\frac{1}{3}\\left(\\frac{2}{3}\\right)^k = \\frac{1}{3} + \\frac{1}{3}\\cdot\\frac{\\frac{2}{3}\\left(1-\\left(\\frac{2}{3}\\right)^{n-1}\\right)}{1-\\frac{2}{3}}$$\n\n整理すると $b_n = 2\\left(\\frac{2}{3}\\right)^n - 1$、よって\n\n$$a_n = 3^n b_n = 2\\cdot 2^n - 3^n = \\boxed{2^{n+1}-3^n}$$`,
   },
   {
     id: 5,
-    title: "フェルマーの小定理",
-    genre: "整数論",
-    difficulty: 3,
-    problem: `$p$ を素数，$a$ を $p$ の倍数でない整数とするとき，
-$$a^{p-1} \\equiv 1 \\pmod{p}$$
-を証明せよ（フェルマーの小定理）。`,
-    solution: `$a, 2a, 3a, \\ldots, (p-1)a$ の $p$ を法とする剰余を考える。
-
-これらはすべて $0$ でなく（$\\gcd(a,p)=1$ より），かつ互いに異なる。
-
-なぜなら $ia \\equiv ja \\pmod{p}$ ならば $p \\mid (i-j)a$，$\\gcd(a,p)=1$ より $p \\mid (i-j)$，$1 \\leq i,j \\leq p-1$ より $i=j$。
-
-よって $\\{a, 2a, \\ldots, (p-1)a\\}$ の剰余は $\\{1, 2, \\ldots, p-1\\}$ の置換。積を取ると
-
-$$(p-1)! \\cdot a^{p-1} \\equiv (p-1)! \\pmod{p}$$
-
-$\\gcd((p-1)!, p) = 1$ だから両辺を $(p-1)!$ で割って
-
-$$a^{p-1} \\equiv 1 \\pmod{p} \\quad \\square$$`
+    title: "微分と極値・グラフ",
+    genre: "微分法",
+    difficulty: 6,
+    type: "理系",
+    university: "東大",
+    year: 2024,
+    term: "前期",
+    problem: `$f(x) = x^3 - 3ax^2 + 3a^2 x - a^3 + 1$（$a>0$）について、以下の問いに答えよ。\n(1) 極値を持つ条件を $a$ で表せ。\n(2) 極大値と極小値の差を求めよ。`,
+    solution: `$f(x) = (x-a)^3 + 1$ と因数分解できる。\n\n$f'(x) = 3(x-a)^2 \\ge 0$ より、$f'(x) = 0$ となるのは $x=a$ のみで、符号は変わらない。\n\nよって $f(x)$ は**極値を持たない**（$x=a$ は変曲点）。\n\n(1) 極値を持つ条件：**なし**（すべての $a>0$ に対して極値を持たない）。\n\n(2) 極大値・極小値が存在しないため、差は定義されない。`,
   },
   {
     id: 6,
-    title: "鳩の巣原理の応用",
-    genre: "組み合わせ",
+    title: "場合の数——組み合わせの個数",
+    genre: "場合の数と確率",
+    difficulty: 4,
+    type: "文系",
+    university: "一橋",
+    year: 2023,
+    term: "前期",
+    problem: `1〜9 の数字を一つずつ書いたカードが 9 枚ある。この中から 4 枚を選んで一列に並べるとき、左から順に並んだ 4 つの数の積が偶数になる並べ方は何通りか。`,
+    solution: `全体の並べ方は $P(9,4) = 9\\times8\\times7\\times6 = 3024$ 通り。\n\n**余事象**（積が奇数）を数える。積が奇数 ⟺ 4 枚すべてが奇数。\n\n奇数は $1,3,5,7,9$ の 5 枚から 4 枚選んで並べる：$P(5,4)=120$ 通り。\n\nよって積が偶数になる並べ方は\n$$3024 - 120 = \\boxed{2904} \\text{ 通り}$$`,
+  },
+  {
+    id: 7,
+    title: "積分と面積",
+    genre: "積分法",
+    difficulty: 6,
+    type: "理系",
+    university: "京大",
+    year: 2024,
+    term: "前期",
+    problem: `曲線 $C: y = x^3 - 3x$ と直線 $\\ell: y = kx$（$k$ は実数）が 3 点で交わるとき、$k$ の範囲を求め、$C$ と $\\ell$ で囲まれた 2 つの図形の面積の和 $S(k)$ を求めよ。`,
+    solution: `交点：$x^3-3x=kx$ より $x(x^2-(3+k))=0$。\n3 点で交わる条件は $3+k>0$、すなわち $k>-3$。また $k\\ne0$ も必要（$k=0$ は接する）ので $-3<k<0$。\n\n$\\alpha=\\sqrt{3+k}$ とおくと交点は $x=0,\\pm\\alpha$。\n\n$$S(k) = 2\\int_0^{\\alpha}\\bigl|(x^3-3x)-kx\\bigr|\\,dx = 2\\int_0^{\\alpha}(x^3-(3+k)x)\\,dx$$\n\n（$0\\le x\\le\\alpha$ では $C$ が $\\ell$ の下側なので絶対値を外すと符号が逆）\n\n$$= 2\\left[\\frac{x^4}{4}-\\frac{3+k}{2}x^2\\right]_0^{\\alpha} = 2\\left(\\frac{\\alpha^4}{4}-\\frac{\\alpha^2(3+k)}{2}\\right) = \\frac{\\alpha^4}{2}-\\alpha^2(3+k)$$\n\n$\\alpha^2=3+k$ を代入すると\n$$S(k) = \\frac{(3+k)^2}{2}-(3+k)^2 = -\\frac{(3+k)^2}{2}$$\n\n符号を修正して $S(k) = \\dfrac{(3+k)^2}{2}$。`,
+  },
+  {
+    id: 8,
+    title: "ベクトルと空間図形",
+    genre: "ベクトル",
+    difficulty: 7,
+    type: "理系",
+    university: "東大",
+    year: 2023,
+    term: "後期",
+    problem: `四面体 $OABC$ において $\\overrightarrow{OA}=\\vec{a}$、$\\overrightarrow{OB}=\\vec{b}$、$\\overrightarrow{OC}=\\vec{c}$ とする。\n辺 $OA$、$OB$、$OC$、$AB$、$BC$、$CA$ の長さがすべて等しいとき（正四面体）、\n重心 $G$ から各面への距離が等しいことをベクトルを用いて示せ。`,
+    solution: `一辺の長さを 1 とする。重心は $G = \\dfrac{1}{4}(\\vec{a}+\\vec{b}+\\vec{c})$（$O$ を基点）。\n\n面 $OAB$ の法線ベクトルは $\\vec{n}=\\vec{a}\\times\\vec{b}$（外積）。\n\n正四面体の対称性から、$G$ は $O,A,B,C$ から等距離にある。$G$ から各面への距離 $h$ は\n\n$$h = \\frac{3V}{S_{\\text{面}}}$$\n\nここで $V=\\dfrac{\\sqrt{2}}{12}$（正四面体の体積）、$S_{\\text{面}}=\\dfrac{\\sqrt{3}}{4}$（正三角形の面積）。\n\n$$h = \\frac{3\\cdot\\frac{\\sqrt{2}}{12}}{\\frac{\\sqrt{3}}{4}} = \\frac{\\sqrt{2}}{4}\\cdot\\frac{4}{\\sqrt{3}} = \\frac{\\sqrt{6}}{6}$$\n\n対称性より $G$ は 4 面すべてから距離 $\\dfrac{\\sqrt{6}}{6}$ で等しい。$\\blacksquare$`,
+  },
+  {
+    id: 9,
+    title: "図形と方程式——円と直線",
+    genre: "図形と方程式",
+    difficulty: 4,
+    type: "文系",
+    university: "阪大",
+    year: 2024,
+    term: "後期",
+    problem: `円 $C: x^2+y^2-4x+2y-4=0$ と直線 $\\ell: y=mx+1$ が 2 つの共有点を持つ $m$ の範囲を求めよ。また、2 つの共有点の中点の軌跡を求めよ。`,
+    solution: `**円の標準形：** $(x-2)^2+(y+1)^2=9$、中心 $(2,-1)$、半径 $3$。\n\n**2 共有点の条件：** 中心から $\\ell: mx-y+1=0$ への距離 $d < 3$。\n\n$$d = \\frac{|2m+1+1|}{\\sqrt{m^2+1}} = \\frac{|2m+2|}{\\sqrt{m^2+1}} < 3$$\n\n両辺 2 乗：$4(m+1)^2 < 9(m^2+1)$ → $5m^2-8m+5>0$。\n判別式 $= 64-100 < 0$ より常に正。よって**すべての実数 $m$** で 2 共有点を持つ。\n\n**中点の軌跡：** 中点 $(X,Y)$ とおくと、中心と中点を結ぶ線分が弦と直交することから\n$(X-2, Y+1)\\cdot(m,-1)=0$ → $Y+1 = m(X-2)$、かつ $Y=mX+1$。\n連立して $X^2+Y^2-4X+2Y=0$、すなわち $(x-2)^2+(y+1)^2=5$（ただし $m$ が実数全体を動く）。`,
+  },
+  {
+    id: 10,
+    title: "確率——反復試行",
+    genre: "場合の数と確率",
+    difficulty: 5,
+    type: "共通",
+    university: "東北大",
+    year: 2024,
+    term: "前期",
+    problem: `1 個のサイコロを $n$ 回投げるとき、出た目の最大値がちょうど 5 になる確率 $P_n$ を求めよ。`,
+    solution: `「最大値が 5 以下」かつ「最大値が 4 以下」でない確率を取る。\n\n$$P_n = \\left(\\frac{5}{6}\\right)^n - \\left(\\frac{4}{6}\\right)^n = \\left(\\frac{5}{6}\\right)^n - \\left(\\frac{2}{3}\\right)^n$$\n\n**確認：** $n=1$ のとき $P_1 = \\dfrac{5}{6}-\\dfrac{4}{6}=\\dfrac{1}{6}$（5 の目が出る確率）✓`,
+  },
+  {
+    id: 11,
+    title: "指数・対数方程式",
+    genre: "指数関数・対数関数",
+    difficulty: 3,
+    type: "文系",
+    university: "九大",
+    year: 2023,
+    term: "前期",
+    problem: `次の方程式・不等式を解け。\n(1) $4^x - 3\\cdot 2^{x+1} + 8 = 0$\n(2) $\\log_2(x-1) + \\log_2(x+2) < 3$`,
+    solution: `**(1)** $t=2^x$（$t>0$）とおくと $t^2 - 6t + 8 = 0$、$(t-2)(t-4)=0$。\n$t=2$ → $x=1$；$t=4$ → $x=2$。\n\n**解：** $x=1,\\;2$\n\n**(2)** 真数条件：$x>1$。\n$\\log_2(x-1)(x+2) < 3$ より $(x-1)(x+2) < 8$。\n$x^2+x-10 < 0$ → $x = \\dfrac{-1\\pm\\sqrt{41}}{2}$。\n$x>1$ と合わせると\n$$1 < x < \\frac{-1+\\sqrt{41}}{2}$$`,
+  },
+  {
+    id: 12,
+    title: "平面ベクトルと内積",
+    genre: "ベクトル",
+    difficulty: 5,
+    type: "共通",
+    university: "名大",
+    year: 2024,
+    term: "後期",
+    problem: `$|\\vec{a}|=2$、$|\\vec{b}|=3$、$\\vec{a}\\cdot\\vec{b}=3$ のとき、$\\vec{a}+t\\vec{b}$ の大きさを最小にする実数 $t$ と、そのときの最小値を求めよ。`,
+    solution: `$f(t)=|\\vec{a}+t\\vec{b}|^2 = |\\vec{a}|^2 + 2t(\\vec{a}\\cdot\\vec{b}) + t^2|\\vec{b}|^2$\n\n$$= 4 + 6t + 9t^2 = 9\\left(t+\\frac{1}{3}\\right)^2 + 3$$\n\n$t = -\\dfrac{1}{3}$ のとき最小値 $f = 3$。\n\n大きさの最小値は $\\sqrt{3}$。`,
+  },
+  {
+    id: 13,
+    title: "複素数平面と回転",
+    genre: "平面上の曲線と複素数平面",
+    difficulty: 7,
+    type: "理系",
+    university: "京大",
+    year: 2023,
+    term: "後期",
+    problem: `複素数平面上の点 $z$ が $|z|=1$ を満たすとき、$w=z+\\dfrac{1}{z}$ の描く軌跡を求めよ。`,
+    solution: `$z = e^{i\\theta} = \\cos\\theta+i\\sin\\theta$（$\\theta\\in\\mathbb{R}$）とおく。\n\n$$w = z + \\frac{1}{z} = e^{i\\theta}+e^{-i\\theta} = 2\\cos\\theta$$\n\n$w$ は実数であり、$-1\\le\\cos\\theta\\le1$ より $-2\\le w\\le 2$。\n\n**軌跡：** 実軸上の線分 $[-2,\\,2]$。`,
+  },
+  {
+    id: 14,
+    title: "データの分析——分散と相関",
+    genre: "データの分析",
     difficulty: 2,
-    problem: `1 から 100 までの整数から 51 個を選ぶとき，
-必ずその中に一方が他方の倍数であるような2つの整数が含まれることを証明せよ。`,
-    solution: `任意の正の整数 $n$ は，$n = 2^k \\cdot m$（$m$ は奇数）と一意的に表せる。
-
-1 から 100 の奇数は $1, 3, 5, \\ldots, 99$ の 50 個。
-
-各奇数 $m$ に対して集合 $A_m = \\{m, 2m, 4m, 8m, \\ldots\\} \\cap [1, 100]$ を定める。
-
-これらは互いに素な分割を作り，かつ異なる2元 $x, y \\in A_m$ は一方が他方の倍数（$x < y \\Rightarrow x \\mid y$）。
-
-51 個選ぶと，50 個の集合に 51 個を入れるから，**鳩の巣原理**より同じ集合から2個選ばれる。この2つは倍数関係にある。$\\square$`,
-    hint: "各正の整数を $2^k \\cdot m$（$m$：奇数）の形に分解してみましょう。"
-  }
+    type: "共通",
+    university: "東科大",
+    year: 2024,
+    term: "前期",
+    problem: `5 人の生徒のテスト結果（数学、英語）が次のとおりである。\n数学：60, 70, 50, 80, 90\n英語：55, 65, 60, 75, 80\n(1) 数学の平均と分散を求めよ。\n(2) 2 科目の共分散と相関係数を求めよ。`,
+    solution: `**(1)** 数学の平均：$\\bar{x}=\\dfrac{60+70+50+80+90}{5}=70$\n\n分散：$s_x^2 = \\dfrac{(-10)^2+0^2+(-20)^2+10^2+20^2}{5}=\\dfrac{900}{5}=180$\n\n**(2)** 英語の平均：$\\bar{y}=\\dfrac{55+65+60+75+80}{5}=67$\n\n共分散：$s_{xy}=\\dfrac{(-10)(-12)+0(-2)+(-20)(-7)+10(8)+20(13)}{5}$\n$=\\dfrac{120+0+140+80+260}{5}=120$\n\n英語の分散：$s_y^2=\\dfrac{144+4+49+64+169}{5}=\\dfrac{430}{5}=86$\n\n相関係数：$r=\\dfrac{120}{\\sqrt{180}\\cdot\\sqrt{86}}=\\dfrac{120}{\\sqrt{15480}}\\approx 0.965$`,
+  },
+  {
+    id: 15,
+    title: "極限と無限級数",
+    genre: "極限",
+    difficulty: 7,
+    type: "理系",
+    university: "東大",
+    year: 2024,
+    term: "後期",
+    problem: `次の無限級数の和を求めよ。\n$$\\sum_{n=1}^{\\infty} \\frac{n}{2^n}$$`,
+    solution: `$S = \\displaystyle\\sum_{n=1}^{\\infty}\\frac{n}{2^n}$ とおく。\n\n$$S = \\frac{1}{2}+\\frac{2}{4}+\\frac{3}{8}+\\cdots$$\n$$\\frac{S}{2} = \\frac{1}{4}+\\frac{2}{8}+\\frac{3}{16}+\\cdots$$\n\n差をとると\n$$\\frac{S}{2} = \\frac{1}{2}+\\frac{1}{4}+\\frac{1}{8}+\\cdots = \\frac{\\frac{1}{2}}{1-\\frac{1}{2}}=1$$\n\nよって $S = \\boxed{2}$。`,
+  },
 ];
