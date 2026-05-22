@@ -28,7 +28,6 @@
 
     /* Layout */
     .page{max-width:1160px;margin:0 auto;padding:24px 16px 60px;display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}
-    @media(max-width:760px){.page{grid-template-columns:1fr}}
 
     /* Sidebar */
     .sidebar{position:sticky;top:68px;max-height:calc(100vh - 80px);overflow-y:auto;scrollbar-width:thin}
@@ -36,12 +35,34 @@
     .sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
     .filter-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
     .filter-header{background:var(--accent);color:#fff;padding:10px 14px;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+    .filter-header-left{display:flex;align-items:center;gap:8px}
     .filter-clear{background:rgba(255,255,255,.2);border:none;color:#fff;font-size:.72rem;padding:2px 8px;border-radius:4px;cursor:pointer;font-family:inherit}
     .filter-clear:hover{background:rgba(255,255,255,.3)}
     .filter-section{padding:10px 14px;border-top:1px solid var(--border)}
     .filter-label{font-size:.68rem;font-weight:700;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
     .stats-row{padding:8px 14px;border-top:1px solid var(--border);font-size:.78rem;color:var(--ink-soft)}
     #stats-text{color:var(--accent);font-weight:700}
+
+    /* Mobile filter toggle arrow — hidden on desktop */
+    .mobile-filter-arrow{display:none;font-size:.9rem;transition:transform .2s;line-height:1}
+    .mobile-filter-arrow.open{transform:rotate(180deg)}
+
+    /* Mobile overrides */
+    @media(max-width:760px){
+      .page{grid-template-columns:1fr}
+      /* ▼ sticky を解除してオーバーラップを防ぐ */
+      .sidebar{position:static;max-height:none;overflow-y:visible}
+      /* ▼ フィルターヘッダーをタップ可能に */
+      .filter-header{cursor:pointer;user-select:none}
+      .mobile-filter-arrow{display:inline-block}
+      /* ▼ フィルター中身は初期非表示 */
+      .filter-sections-wrap{display:none}
+      .filter-sections-wrap.open{display:block}
+    }
+    /* Desktop: 中身は常に表示 */
+    @media(min-width:761px){
+      .filter-sections-wrap{display:block!important}
+    }
 
     /* Chips */
     .chip-group{display:flex;flex-wrap:wrap;gap:5px}
@@ -153,10 +174,15 @@
 <div class="page">
   <aside class="sidebar">
     <div class="filter-panel">
-      <div class="filter-header">
-        フィルター
-        <button class="filter-clear" onclick="clearFilters()">リセット</button>
+      <div class="filter-header" onclick="toggleMobileFilter()">
+        <div class="filter-header-left">
+          <span>フィルター</span>
+          <span class="mobile-filter-arrow" id="mobile-filter-arrow">▾</span>
+        </div>
+        <button class="filter-clear" onclick="event.stopPropagation();clearFilters()">リセット</button>
       </div>
+
+      <div class="filter-sections-wrap" id="filter-sections-wrap">
 
       <!-- ジャンル -->
       <div class="filter-section">
@@ -201,6 +227,8 @@
       </div>
 
       <div class="stats-row"><span id="stats-text">0</span> 件表示中</div>
+
+      </div><!-- /filter-sections-wrap -->
     </div>
   </aside>
 
@@ -230,6 +258,16 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <script src="problems.js"></script>
 <script>
+// ── Mobile filter toggle ──────────────────────────────
+function toggleMobileFilter(){
+  // only acts on mobile; on desktop the wrapper is always shown via CSS
+  if(window.innerWidth > 760) return;
+  const wrap  = document.getElementById('filter-sections-wrap');
+  const arrow = document.getElementById('mobile-filter-arrow');
+  const isOpen = wrap.classList.toggle('open');
+  arrow.classList.toggle('open', isOpen);
+}
+
 // ── Genre tree definition ──────────────────────────────
 const GENRE_TREE = [
   { label:"数学I",   subs:["数と式","図形と計量","二次関数","データの分析"] },
