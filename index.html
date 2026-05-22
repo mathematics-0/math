@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数学問題集</title>
+
+  <!-- KaTeX for math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:        #f8f6f0;
+      --surface:   #ffffff;
+      --border:    #e2ddd5;
+      --ink:       #1a1814;
+      --ink-soft:  #5a5550;
+      --ink-faint: #9a9590;
+      --accent:    #2d6a4f;
+      --accent-lt: #d8efe5;
+      --accent-dk: #1b4332;
+      --warn:      #b45309;
+      --warn-lt:   #fef3c7;
+      --red:       #991b1b;
+      --red-lt:    #fee2e2;
+      --shadow:    0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.04);
+      --shadow-md: 0 2px 8px rgba(0,0,0,.1),  0 8px 24px rgba(0,0,0,.06);
+      --radius:    10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────── */
+    header {
+      background: var(--accent-dk);
+      color: #fff;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.18);
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 56px;
+    }
+    .site-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .header-count {
+      background: rgba(255,255,255,.15);
+      border-radius: 20px;
+      font-size: .78rem;
+      padding: 2px 10px;
+      white-space: nowrap;
+    }
+
+    /* ── Layout ──────────────────────────── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 720px) {
+      .page { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; }
+    }
+
+    /* ── Sidebar ─────────────────────────── */
+    .sidebar {
+      position: sticky;
+      top: 72px;
+    }
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .filter-header {
+      background: var(--accent);
+      color: #fff;
+      padding: 10px 16px;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .filter-clear {
+      background: rgba(255,255,255,.2);
+      border: none;
+      color: #fff;
+      font-size: .75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .filter-clear:hover { background: rgba(255,255,255,.3); }
+    .filter-section {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .filter-section:first-of-type { border-top: none; }
+    .filter-label {
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--ink-faint);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--ink-soft);
+      font-size: .78rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    .chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .chip.diff-chip { font-family: 'JetBrains Mono', monospace; }
+
+    /* stats */
+    .stats-row {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      font-size: .78rem;
+      color: var(--ink-soft);
+    }
+    #stats-text { color: var(--accent); font-weight: 700; }
+
+    /* ── Problem list ─────────────────────── */
+    #problem-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .no-results {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
+      text-align: center;
+      color: var(--ink-faint);
+      font-size: .95rem;
+    }
+
+    /* ── Problem card ─────────────────────── */
+    .problem-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .problem-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+    .card-head {
+      padding: 16px 20px 12px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .problem-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      color: var(--ink-faint);
+      white-space: nowrap;
+      margin-top: 4px;
+    }
+    .card-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .card-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .badge-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: .72rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .badge-genre {
+      background: var(--accent-lt);
+      color: var(--accent-dk);
+    }
+    .badge-diff {
+      background: #f0f0f0;
+      color: var(--ink-soft);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .badge-diff[data-d="1"] { background: #e8f5e9; color: #2e7d32; }
+    .badge-diff[data-d="2"] { background: #e3f2fd; color: #1565c0; }
+    .badge-diff[data-d="3"] { background: var(--warn-lt); color: var(--warn); }
+    .badge-diff[data-d="4"] { background: #fce4ec; color: #c62828; }
+    .badge-diff[data-d="5"] { background: #f3e5f5; color: #6a1b9a; }
+
+    /* problem body */
+    .card-body {
+      padding: 0 20px 16px 20px;
+    }
+    .section-label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 4px;
+    }
+    .problem-text {
+      font-size: .93rem;
+      line-height: 1.85;
+      color: var(--ink);
+      background: #faf9f6;
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 12px;
+    }
+
+    /* accordion */
+    .hint-block, .solution-block {
+      margin-bottom: 8px;
+    }
+    .accordion-btn {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 600;
+      transition: all .15s;
+      text-align: left;
+    }
+    .hint-btn {
+      background: var(--warn-lt);
+      color: var(--warn);
+      border-color: #fde68a;
+    }
+    .hint-btn:hover { filter: brightness(.95); }
+    .solution-btn {
+      background: var(--accent-lt);
+      color: var(--accent-dk);
+      border-color: #a7f3d0;
+    }
+    .solution-btn:hover { filter: brightness(.95); }
+    .btn-arrow {
+      transition: transform .2s;
+      font-size: 1rem;
+    }
+    .accordion-btn.open .btn-arrow { transform: rotate(180deg); }
+
+    .accordion-content {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 0 0 6px 6px;
+      font-size: .88rem;
+      line-height: 1.9;
+      border: 1.5px solid transparent;
+      border-top: none;
+      margin-top: -2px;
+    }
+    .accordion-content.open { display: block; }
+    .hint-content {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #78350f;
+    }
+    .solution-content {
+      background: #f0fdf4;
+      border-color: #a7f3d0;
+      color: #14532d;
+    }
+
+    /* KaTeX overrides */
+    .katex { font-size: 1em !important; }
+    .katex-display { margin: .8em 0 !important; overflow-x: auto; }
+
+    /* table inside solution */
+    .accordion-content table {
+      border-collapse: collapse;
+      margin: .6em 0;
+      font-size: .85em;
+    }
+    .accordion-content td, .accordion-content th {
+      border: 1px solid #b6d4c2;
+      padding: 4px 12px;
+      text-align: center;
+    }
+    .accordion-content th { background: #dcfce7; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <span class="site-title">📐 数学問題集</span>
+    <span class="header-count" id="header-count">— 問</span>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="filter-panel">
+      <div class="filter-header">
+        フィルター
+        <button class="filter-clear" onclick="clearFilters()">リセット</button>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">ジャンル</div>
+        <div class="filter-chips" id="genre-chips"></div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">難易度</div>
+        <div class="filter-chips" id="diff-chips">
+          <button class="chip diff-chip" data-diff="1" onclick="toggleDiff(1)">★1</button>
+          <button class="chip diff-chip" data-diff="2" onclick="toggleDiff(2)">★2</button>
+          <button class="chip diff-chip" data-diff="3" onclick="toggleDiff(3)">★3</button>
+          <button class="chip diff-chip" data-diff="4" onclick="toggleDiff(4)">★4</button>
+          <button class="chip diff-chip" data-diff="5" onclick="toggleDiff(5)">★5</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <span id="stats-text">0</span> 件表示中
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Problem list ── -->
+  <main id="problem-list"></main>
+
+</div>
+
+<script src="problems.js"></script>
+<script>
+  // ---------- state ----------
+  let activeGenres = new Set();
+  let activeDiffs  = new Set();
+
+  // ---------- filter logic ----------
+  function filtered() {
+    return PROBLEMS.filter(p => {
+      const gOk = activeGenres.size === 0 || activeGenres.has(p.genre);
+      const dOk = activeDiffs.size  === 0 || activeDiffs.has(p.difficulty);
+      return gOk && dOk;
+    });
+  }
+
+  function toggleGenre(g) {
+    activeGenres.has(g) ? activeGenres.delete(g) : activeGenres.add(g);
+    updateChips();
+    render();
+  }
+  function toggleDiff(d) {
+    activeDiffs.has(d) ? activeDiffs.delete(d) : activeDiffs.add(d);
+    updateChips();
+    render();
+  }
+  function clearFilters() {
+    activeGenres.clear();
+    activeDiffs.clear();
+    updateChips();
+    render();
+  }
+
+  // ---------- chips ----------
+  function buildGenreChips() {
+    const container = document.getElementById('genre-chips');
+    GENRES.forEach(g => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = g;
+      btn.onclick = () => toggleGenre(g);
+      btn.dataset.genre = g;
+      container.appendChild(btn);
+    });
+  }
+  function updateChips() {
+    document.querySelectorAll('[data-genre]').forEach(btn => {
+      btn.classList.toggle('active', activeGenres.has(btn.dataset.genre));
+    });
+    document.querySelectorAll('[data-diff]').forEach(btn => {
+      btn.classList.toggle('active', activeDiffs.has(Number(btn.dataset.diff)));
+    });
+  }
+
+  // ---------- accordion ----------
+  function toggleAccordion(btn) {
+    const content = btn.nextElementSibling;
+    const isOpen  = btn.classList.contains('open');
+    btn.classList.toggle('open', !isOpen);
+    content.classList.toggle('open', !isOpen);
+    // re-render KaTeX in newly opened content
+    if (!isOpen) {
+      renderMathInElement(content, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$",  right: "$",  display: false}
+        ],
+        throwOnError: false
+      });
+    }
+  }
+
+  // ---------- render ----------
+  function diffStars(d) {
+    return '★'.repeat(d) + '☆'.repeat(5 - d);
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function render() {
+    const list = document.getElementById('problem-list');
+    const items = filtered();
+
+    document.getElementById('stats-text').textContent = items.length;
+    document.getElementById('header-count').textContent = items.length + ' 問';
+
+    if (items.length === 0) {
+      list.innerHTML = '<div class="no-results">条件に合う問題が見つかりませんでした</div>';
+      return;
+    }
+
+    list.innerHTML = items.map(p => {
+      const hintHtml = p.hint ? `
+        <div class="hint-block">
+          <button class="accordion-btn hint-btn" onclick="toggleAccordion(this)">
+            💡 ヒントを見る <span class="btn-arrow">▾</span>
+          </button>
+          <div class="accordion-content hint-content">${escapeHtml(p.hint)}</div>
+        </div>` : '';
+
+      const solHtml = p.solution ? `
+        <div class="solution-block">
+          <button class="accordion-btn solution-btn" onclick="toggleAccordion(this)">
+            ✅ 解説を見る <span class="btn-arrow">▾</span>
+          </button>
+          <div class="accordion-content solution-content">${escapeHtml(p.solution)}</div>
+        </div>` : '';
+
+      return `
+        <article class="problem-card">
+          <div class="card-head">
+            <span class="problem-num">#${String(p.id).padStart(3,'0')}</span>
+            <div class="card-meta">
+              <div class="card-title">${escapeHtml(p.title)}</div>
+              <div class="badge-row">
+                <span class="badge badge-genre">${escapeHtml(p.genre)}</span>
+                <span class="badge badge-diff" data-d="${p.difficulty}">${diffStars(p.difficulty)}</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="section-label">問題</div>
+            <div class="problem-text math-content">${escapeHtml(p.problem)}</div>
+            ${hintHtml}
+            ${solHtml}
+          </div>
+        </article>`;
+    }).join('');
+
+    // Render math in problem text
+    document.querySelectorAll('.math-content').forEach(el => {
+      renderMathInElement(el, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$",  right: "$",  display: false}
+        ],
+        throwOnError: false
+      });
+    });
+  }
+
+  // ---------- init ----------
+  document.addEventListener('DOMContentLoaded', () => {
+    buildGenreChips();
+    render();
+  });
+
+  // KaTeX auto-render hook
+  document.addEventListener('DOMContentLoaded', () => {
+    // initial render triggered above
+  });
+</script>
+</body>
+</html>
