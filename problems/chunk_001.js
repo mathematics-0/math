@@ -37,7 +37,7 @@
     title: "整数の性質と最大公約数",
     genre: "場合の数と確率",
     difficulty: 4,
-    type: "共通",
+    type: "文系",
     university: "東大",
     year: 2024,
     term: "前期",
