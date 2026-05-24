@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数学問題集</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#f8f6f0; --surface:#ffffff; --border:#e2ddd5;
+      --ink:#1a1814; --ink-soft:#5a5550; --ink-faint:#9a9590;
+      --accent:#2d6a4f; --accent-lt:#d8efe5; --accent-dk:#1b4332;
+      --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.04);
+      --shadow-md:0 2px 8px rgba(0,0,0,.1),0 8px 24px rgba(0,0,0,.06);
+      --radius:10px;
+      --star:#f59e0b;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;min-height:100vh}
+
+    /* Header */
+    header{background:var(--accent-dk);color:#fff;padding:0 24px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+    .header-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;gap:16px;height:56px}
+    .site-title{font-family:'Noto Serif JP',serif;font-size:1.2rem;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+    .header-count{background:rgba(255,255,255,.15);border-radius:20px;font-size:.78rem;padding:2px 10px;white-space:nowrap}
+
+    /* Layout */
+    .page{max-width:1160px;margin:0 auto;padding:24px 16px 60px;display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}
+
+    /* Sidebar */
+    .sidebar{position:sticky;top:68px;max-height:calc(100vh - 80px);overflow-y:auto;scrollbar-width:thin}
+    .sidebar::-webkit-scrollbar{width:4px}
+    .sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+    .filter-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .filter-header{background:var(--accent);color:#fff;padding:10px 14px;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+    .filter-header-left{display:flex;align-items:center;gap:8px}
+    .filter-clear{background:rgba(255,255,255,.2);border:none;color:#fff;font-size:.72rem;padding:2px 8px;border-radius:4px;cursor:pointer;font-family:inherit}
+    .filter-clear:hover{background:rgba(255,255,255,.3)}
+    .filter-section{padding:10px 14px;border-top:1px solid var(--border)}
+    .filter-label{font-size:.68rem;font-weight:700;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+    .stats-row{padding:8px 14px;border-top:1px solid var(--border);font-size:.78rem;color:var(--ink-soft)}
+    #stats-text{color:var(--accent);font-weight:700}
+
+    /* Favorites filter button */
+    .fav-filter-btn{
+      width:100%;display:flex;align-items:center;justify-content:center;gap:6px;
+      border:1.5px solid var(--border);background:transparent;color:var(--ink-soft);
+      font-size:.8rem;font-weight:600;padding:6px 10px;border-radius:6px;cursor:pointer;
+      font-family:inherit;transition:all .15s;
+    }
+    .fav-filter-btn:hover{border-color:var(--star);color:var(--star)}
+    .fav-filter-btn.active{border-color:var(--star);background:#fffbeb;color:#92400e}
+    .fav-filter-btn .fav-star{font-size:1rem;transition:transform .15s}
+    .fav-filter-btn.active .fav-star{transform:scale(1.2)}
+
+    /* Mobile filter toggle arrow */
+    .mobile-filter-arrow{display:none;font-size:.9rem;transition:transform .2s;line-height:1}
+    .mobile-filter-arrow.open{transform:rotate(180deg)}
+
+    /* Mobile overrides */
+    @media(max-width:760px){
+      .page{grid-template-columns:1fr}
+      .sidebar{position:static;max-height:none;overflow-y:visible}
+      .filter-header{cursor:pointer;user-select:none}
+      .mobile-filter-arrow{display:inline-block}
+      .filter-sections-wrap{display:none}
+      .filter-sections-wrap.open{display:block}
+    }
+    @media(min-width:761px){
+      .filter-sections-wrap{display:block!important}
+    }
+
+    /* Chips */
+    .chip-group{display:flex;flex-wrap:wrap;gap:5px}
+    .chip{border:1.5px solid var(--border);background:transparent;color:var(--ink-soft);font-size:.75rem;padding:2px 9px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all .13s;line-height:1.6}
+    .chip:hover{border-color:var(--accent);color:var(--accent)}
+    .chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+    /* Type chips */
+    .type-chips{display:flex;gap:5px}
+    .type-chip{flex:1;text-align:center;border:1.5px solid var(--border);background:transparent;color:var(--ink-soft);font-size:.75rem;padding:4px 6px;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .13s}
+    .type-chip:hover{border-color:var(--accent);color:var(--accent)}
+    .type-chip.active{border-color:var(--accent);background:var(--accent);color:#fff}
+
+    /* Genre tree */
+    .genre-parent{margin-bottom:4px}
+    .genre-parent-btn{width:100%;display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:.78rem;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:inherit;transition:all .13s}
+    .genre-parent-btn:hover,.genre-parent-btn.has-active{background:var(--accent-lt);border-color:var(--accent);color:var(--accent-dk)}
+    .tree-arrow{font-size:.65rem;transition:transform .15s;display:inline-block}
+    .tree-arrow.open{transform:rotate(90deg)}
+    .genre-children{padding:5px 0 3px 8px;display:flex;flex-wrap:wrap;gap:4px}
+
+    /* Diff chips */
+    .diff-chip{font-family:'JetBrains Mono',monospace;font-size:.72rem}
+
+    /* Problem list */
+    #problem-list{display:flex;flex-direction:column;gap:14px}
+    .no-results{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center;color:var(--ink-faint)}
+
+    /* Loading indicator */
+    .load-more-indicator{text-align:center;padding:20px;color:var(--ink-faint);font-size:.8rem}
+
+    /* Problem card */
+    .problem-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .2s,transform .2s;cursor:pointer}
+    .problem-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+    .card-head{padding:14px 18px 10px;display:flex;gap:10px;align-items:flex-start}
+    .problem-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--ink-faint);white-space:nowrap;margin-top:3px}
+    .card-meta{flex:1;min-width:0}
+    .card-title{font-family:'Noto Serif JP',serif;font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.4}
+    .badge-row{display:flex;gap:5px;flex-wrap:wrap}
+    .badge{font-size:.68rem;padding:2px 7px;border-radius:4px;font-weight:600;white-space:nowrap}
+    .badge-genre{background:var(--accent-lt);color:var(--accent-dk)}
+    .badge-univ{background:#ede9fe;color:#4c1d95}
+    .badge-year{background:#fef9c3;color:#713f12}
+    .badge-type-文系{background:#fce7f3;color:#831843}
+    .badge-type-理系{background:#dbeafe;color:#1e3a8a}
+    .badge-type-共通{background:#f0fdf4;color:#14532d}
+    .badge-term-前期{background:#fff7ed;color:#9a3412}
+    .badge-term-後期{background:#f0f9ff;color:#0c4a6e}
+
+    /* Difficulty badge colors 1-10 */
+    .badge-diff{font-family:'JetBrains Mono',monospace}
+    .badge-diff[data-d="1"]{background:#dcfce7;color:#166534}
+    .badge-diff[data-d="2"]{background:#bbf7d0;color:#166534}
+    .badge-diff[data-d="3"]{background:#bfdbfe;color:#1e3a8a}
+    .badge-diff[data-d="4"]{background:#93c5fd;color:#1e3a8a}
+    .badge-diff[data-d="5"]{background:#fef08a;color:#713f12}
+    .badge-diff[data-d="6"]{background:#fed7aa;color:#7c2d12}
+    .badge-diff[data-d="7"]{background:#fca5a5;color:#7f1d1d}
+    .badge-diff[data-d="8"]{background:#f87171;color:#fff}
+    .badge-diff[data-d="9"]{background:#e879f9;color:#fff}
+    .badge-diff[data-d="10"]{background:#581c87;color:#fff}
+
+    /* Star button on card */
+    .star-btn{
+      background:none;border:none;font-size:1.25rem;cursor:pointer;
+      color:#d1ccc7;padding:0 2px;line-height:1;flex-shrink:0;
+      transition:color .15s,transform .15s;
+    }
+    .star-btn:hover{color:var(--star);transform:scale(1.2)}
+    .star-btn.active{color:var(--star)}
+
+    /* Card body */
+    .card-body{padding:0 18px 14px}
+    .section-label{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
+    .problem-text{font-size:.9rem;line-height:1.9;color:var(--ink);background:#faf9f6;border-left:3px solid var(--accent);padding:10px 13px;border-radius:0 6px 6px 0;margin-bottom:10px;overflow-x:auto}
+
+    /* Expand button (legacy, kept for compat) */
+    .expand-btn{background:none;border:none;color:var(--ink-faint);font-size:.75rem;cursor:pointer;padding:0;font-family:inherit;display:flex;align-items:center;gap:4px;margin-bottom:8px;transition:color .13s}
+    .expand-btn:hover{color:var(--accent)}
+
+    /* Solution accordion */
+    .solution-block{margin-bottom:6px}
+    .accordion-btn{width:100%;display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-radius:6px;border:1.5px solid #a7f3d0;background:var(--accent-lt);color:var(--accent-dk);cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:600;transition:all .13s;text-align:left}
+    .accordion-btn:hover{filter:brightness(.95)}
+    .btn-arrow{transition:transform .2s;font-size:.9rem}
+    .accordion-btn.open .btn-arrow{transform:rotate(180deg)}
+    .accordion-content{display:none;padding:11px 13px;border-radius:0 0 6px 6px;font-size:.86rem;line-height:1.9;background:#f0fdf4;border:1.5px solid #a7f3d0;border-top:none;margin-top:-2px;overflow-x:auto}
+    .accordion-content.open{display:block}
+
+    /* KaTeX */
+    .katex{font-size:1em!important}
+    .katex-display{margin:.7em 0!important;overflow-x:auto}
+    .accordion-content table{border-collapse:collapse;margin:.5em 0;font-size:.85em}
+    .accordion-content td,.accordion-content th{border:1px solid #b6d4c2;padding:3px 10px;text-align:center}
+    .accordion-content th{background:#dcfce7;font-weight:700}
+
+    /* ── Modal ─────────────────────────────── */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:var(--surface);border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,.25);width:100%;max-width:780px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+    .modal-header{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-shrink:0}
+    .modal-title-wrap{display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0}
+    .modal-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--ink-faint);margin-top:4px;white-space:nowrap}
+    .modal-title{font-family:'Noto Serif JP',serif;font-size:1.1rem;font-weight:700;line-height:1.4}
+    .modal-header-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+    .modal-fav-btn{
+      background:var(--bg);border:1px solid var(--border);
+      font-size:1.2rem;width:32px;height:32px;border-radius:50%;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      color:#d1ccc7;transition:all .15s;
+    }
+    .modal-fav-btn:hover{color:var(--star);border-color:var(--star)}
+    .modal-fav-btn.active{color:var(--star);background:#fffbeb;border-color:#fcd34d}
+    .modal-close{background:var(--bg);border:1px solid var(--border);color:var(--ink-soft);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .13s}
+    .modal-close:hover{background:var(--border)}
+    .modal-badges{display:flex;gap:5px;flex-wrap:wrap;padding:8px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+    .modal-body{padding:18px 20px 20px;overflow-y:auto}
+    .modal-section-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px}
+    .modal-problem-text{font-size:.95rem;line-height:1.95;background:#faf9f6;border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:16px;overflow-x:auto}
+    /* Modal solution is now an accordion */
+    #modal-solution-wrap{margin-top:14px}
+    .modal-solution-content{padding:14px 16px;background:#f0fdf4;border:1.5px solid #a7f3d0;border-top:none;border-radius:0 0 8px 8px;font-size:.9rem;line-height:1.95;overflow-x:auto;display:none}
+    .modal-solution-content.open{display:block}
+    .modal-solution-content table{border-collapse:collapse;margin:.5em 0;font-size:.85em}
+    .modal-solution-content td,.modal-solution-content th{border:1px solid #b6d4c2;padding:3px 10px;text-align:center}
+    .modal-solution-content th{background:#dcfce7;font-weight:700}
+
+    /* ── Sort panel ──────────────────────────────────── */
+    .sort-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-top:12px}
+    .sort-header{background:#1b4332;color:#fff;padding:10px 14px;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+    .sort-header-left{display:flex;align-items:center;gap:8px}
+    .sort-sections-wrap{padding:10px 14px}
+    .sort-label{font-size:.68rem;font-weight:700;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+    .sort-key-btns,.sort-dir-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+    .sort-key-btns:last-child,.sort-dir-btns:last-child{margin-bottom:0}
+    .sort-btn{border:1.5px solid var(--border);background:transparent;color:var(--ink-soft);font-size:.75rem;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all .13s;line-height:1.6}
+    .sort-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .sort-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .sort-dir-btns .sort-btn{flex:1;text-align:center;border-radius:6px;padding:4px 6px}
+
+    /* Mobile sort toggle */
+    .mobile-sort-arrow{font-size:.9rem;transition:transform .2s;line-height:1}
+    .mobile-sort-arrow.open{transform:rotate(180deg)}
+    @media(max-width:760px){
+      .sort-sections-wrap{display:none}
+      .sort-sections-wrap.open{display:block}
+    }
+    @media(min-width:761px){
+      .sort-sections-wrap{display:block!important}
+    }
+
+    /* Loading state */
+    #loading-overlay{
+      position:fixed;inset:0;background:var(--bg);z-index:999;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+      font-size:.9rem;color:var(--ink-soft);
+    }
+    #loading-overlay.hidden{display:none}
+    .loading-spinner{
+      width:36px;height:36px;border:3px solid var(--border);
+      border-top-color:var(--accent);border-radius:50%;
+      animation:spin .7s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+
+<!-- Loading overlay (表示中はコンテンツを隠す) -->
+<div id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <span id="loading-text">問題データを読み込み中…</span>
+</div>
+
+<header>
+  <div class="header-inner">
+    <span class="site-title">📐 数学問題集</span>
+    <span class="header-count" id="header-count">— 問</span>
+  </div>
+</header>
+
+<div class="page">
+  <aside class="sidebar">
+    <div class="filter-panel">
+      <div class="filter-header" onclick="toggleMobileFilter()">
+        <div class="filter-header-left">
+          <span>フィルター</span>
+          <span class="mobile-filter-arrow" id="mobile-filter-arrow">▾</span>
+        </div>
+        <button class="filter-clear" onclick="event.stopPropagation();clearFilters()">リセット</button>
+      </div>
+
+      <div class="filter-sections-wrap" id="filter-sections-wrap">
+
+      <!-- お気に入り -->
+      <div class="filter-section">
+        <button class="fav-filter-btn" id="fav-filter-btn" onclick="toggleFavoritesFilter()">
+          <span class="fav-star">★</span> お気に入りのみ表示
+        </button>
+      </div>
+
+      <!-- ジャンル -->
+      <div class="filter-section">
+        <div class="filter-label">ジャンル</div>
+        <div id="genre-tree"></div>
+      </div>
+
+      <!-- 難易度 -->
+      <div class="filter-section">
+        <div class="filter-label">難易度</div>
+        <div class="chip-group" id="diff-chips"></div>
+      </div>
+
+      <!-- 大学 -->
+      <div class="filter-section">
+        <div class="filter-label">大学</div>
+        <div class="chip-group" id="univ-chips"></div>
+      </div>
+
+      <!-- 文系・理系 -->
+      <div class="filter-section">
+        <div class="filter-label">文系 / 理系</div>
+        <div class="type-chips">
+          <button class="type-chip" data-type="文系" onclick="toggleType('文系')">文系</button>
+          <button class="type-chip" data-type="理系" onclick="toggleType('理系')">理系</button>
+          <button class="type-chip" data-type="共通" onclick="toggleType('共通')">共通</button>
+        </div>
+      </div>
+
+      <!-- 前期・後期 -->
+      <div class="filter-section">
+        <div class="filter-label">前期 / 後期</div>
+        <div class="type-chips">
+          <button class="type-chip" data-term="前期" onclick="toggleTerm('前期')">前期</button>
+          <button class="type-chip" data-term="後期" onclick="toggleTerm('後期')">後期</button>
+        </div>
+      </div>
+
+      <!-- 年度 -->
+      <div class="filter-section">
+        <div class="filter-label">年度</div>
+        <div class="chip-group" id="year-chips"></div>
+      </div>
+
+      <div class="stats-row"><span id="stats-text">0</span> 件表示中</div>
+
+      </div><!-- /filter-sections-wrap -->
+    </div><!-- /filter-panel -->
+
+    <!-- Sort panel -->
+    <div class="sort-panel">
+      <div class="sort-header" onclick="toggleMobileSort()">
+        <div class="sort-header-left">
+          <span>ソート</span>
+          <span class="mobile-sort-arrow" id="mobile-sort-arrow">▾</span>
+        </div>
+      </div>
+      <div class="sort-sections-wrap" id="sort-sections-wrap">
+        <div class="sort-label">並び替え</div>
+        <div class="sort-key-btns">
+          <button class="sort-btn active" data-sort-key="id"         onclick="setSortKey('id')">番号</button>
+          <button class="sort-btn"        data-sort-key="difficulty" onclick="setSortKey('difficulty')">難易度</button>
+          <button class="sort-btn"        data-sort-key="year"       onclick="setSortKey('year')">年度</button>
+          <button class="sort-btn"        data-sort-key="university" onclick="setSortKey('university')">学校</button>
+        </div>
+        <div class="sort-label">順序</div>
+        <div class="sort-dir-btns">
+          <button class="sort-btn active" data-sort-dir="asc"  onclick="setSortDir('asc')">↑ 昇順</button>
+          <button class="sort-btn"        data-sort-dir="desc" onclick="setSortDir('desc')">↓ 降順</button>
+        </div>
+      </div>
+    </div><!-- /sort-panel -->
+
+  </aside>
+
+  <main>
+    <div id="problem-list"></div>
+    <!-- 無限スクロール用センチネル -->
+    <div id="scroll-sentinel"></div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <span class="modal-num" id="modal-num"></span>
+      </div>
+      <div class="modal-header-actions">
+        <!-- モーダル内お気に入りボタン -->
+        <button class="modal-fav-btn" id="modal-fav-btn" title="お気に入り">☆</button>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-badges" id="modal-badges"></div>
+    <div class="modal-body">
+      <div class="modal-section-label">問題</div>
+      <div class="modal-problem-text" id="modal-problem"></div>
+      <!-- 解説はアコーディオン、デフォルト折りたたみ -->
+      <div id="modal-solution-wrap" style="display:none">
+        <button class="accordion-btn" id="modal-solution-btn" onclick="toggleModalSolution()" style="border-radius:6px 6px 0 0">
+          解説を見る <span class="btn-arrow">▾</span>
+        </button>
+        <div class="modal-solution-content" id="modal-solution"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  ▼▼▼  問題チャンクファイルの設定  ▼▼▼
+//  problems/ フォルダにチャンクファイルを追加したら、
+//  このリストにパスを追記してください。
+// ════════════════════════════════════════════════════════
+const PROBLEM_CHUNK_FILES = [
+  'problems/chunk_001.js',
+  // 'problems/chunk_002.js',
+  // 'problems/chunk_003.js',
+  // ここに追加していく
+];
+// ════════════════════════════════════════════════════════
+
+// ── グローバル状態 ──────────────────────────────────────
+let PROBLEMS = [];
+
+// お気に入り（localStorage）
+const FAV_KEY = 'math_problem_favorites';
+let favorites = new Set();
+try {
+  favorites = new Set(JSON.parse(localStorage.getItem(FAV_KEY) || '[]'));
+} catch(e) {}
+
+// フィルター状態
+let activeGenres = new Set();
+let activeDiffs  = new Set();
+let activeUnivs  = new Set();
+let activeTypes  = new Set();
+let activeYears  = new Set();
+let activeTerms  = new Set();
+let showFavoritesOnly = false;
+
+// ソート状態
+let sortKey = 'id';   // 'id' | 'difficulty' | 'year' | 'university'
+let sortDir = 'asc';  // 'asc' | 'desc'
+
+// 仮想スクロール状態
+const BATCH_SIZE = 30;
+let renderedCount   = 0;
+let currentFiltered = [];
+let scrollObserver  = null;
+
+// ── KaTeX ────────────────────────────────────────────────
+const KATEX_OPTS = {
+  delimiters:[
+    {left:"$$",right:"$$",display:true},
+    {left:"$", right:"$", display:false}
+  ],
+  throwOnError:false
+};
+function renderKaTeX(el){ if(window.renderMathInElement) renderMathInElement(el, KATEX_OPTS); }
+
+// ── お気に入り ────────────────────────────────────────────
+function saveFavorites(){
+  try { localStorage.setItem(FAV_KEY, JSON.stringify([...favorites])); } catch(e){}
+}
+
+function toggleFavorite(id, event){
+  event.stopPropagation();
+  favorites.has(id) ? favorites.delete(id) : favorites.add(id);
+  saveFavorites();
+  // カード上の星を更新
+  const cardStar = document.querySelector(`.star-btn[data-id="${id}"]`);
+  if(cardStar) applyStarState(cardStar, id);
+  // モーダルが同じ問題なら星を更新
+  const modalFav = document.getElementById('modal-fav-btn');
+  if(modalFav && Number(modalFav.dataset.id) === id) applyStarState(modalFav, id);
+  // お気に入りフィルター中なら再描画
+  if(showFavoritesOnly) render();
+}
+
+function applyStarState(btn, id){
+  const on = favorites.has(id);
+  btn.textContent = on ? '★' : '☆';
+  btn.classList.toggle('active', on);
+}
+
+function toggleFavoritesFilter(){
+  showFavoritesOnly = !showFavoritesOnly;
+  document.getElementById('fav-filter-btn').classList.toggle('active', showFavoritesOnly);
+  render();
+}
+
+// ── ジャンルツリー定義 ────────────────────────────────────
+const GENRE_TREE = [
+  { label:"数学I",   subs:["数と式","図形と計量","二次関数","データの分析"] },
+  { label:"数学A",   subs:["場合の数と確率","図形の性質","数学と人間の活動"] },
+  { label:"数学II",  subs:["いろいろな式","図形と方程式","三角関数","指数関数・対数関数","微分・積分"] },
+  { label:"数学B",   subs:["数列","統計的な推測","コンピュータの活用"] },
+  { label:"数学C",   subs:["ベクトル","平面上の曲線と複素数平面"] },
+  { label:"数学III", subs:["極限","微分法","積分法"] },
+];
+const UNIVERSITIES = ["東大","京大","阪大","北大","東北大","名大","九大","東科大","一橋"];
+
+// ── フィルターロジック ────────────────────────────────────
+function filtered(){
+  return PROBLEMS.filter(p => {
+    if(showFavoritesOnly && !favorites.has(p.id)) return false;
+    if(activeGenres.size && !activeGenres.has(p.genre)) return false;
+    if(activeDiffs.size  && !activeDiffs.has(p.difficulty)) return false;
+    if(activeUnivs.size  && !activeUnivs.has(p.university)) return false;
+    if(activeTypes.size  && p.type !== '共通' && !activeTypes.has(p.type)) return false;
+    if(activeYears.size  && !activeYears.has(p.year)) return false;
+    if(activeTerms.size  && !activeTerms.has(p.term)) return false;
+    return true;
+  });
+}
+
+function sortedFiltered(){
+  const arr = filtered();
+  const dir = sortDir === 'asc' ? 1 : -1;
+  arr.sort((a, b) => {
+    let va, vb;
+    switch(sortKey){
+      case 'difficulty': va = a.difficulty||0;    vb = b.difficulty||0;    break;
+      case 'year':       va = a.year||0;          vb = b.year||0;          break;
+      case 'university': va = a.university||'';   vb = b.university||'';   break;
+      default:           va = a.id||0;            vb = b.id||0;
+    }
+    if(va < vb) return -1 * dir;
+    if(va > vb) return  1 * dir;
+    return 0;
+  });
+  return arr;
+}
+
+function toggleGenre(g)       { activeGenres.has(g)?activeGenres.delete(g):activeGenres.add(g); updateUI();render(); }
+function toggleDiff(d)        { activeDiffs.has(d)?activeDiffs.delete(d):activeDiffs.add(d); updateUI();render(); }
+function toggleUniv(u)        { activeUnivs.has(u)?activeUnivs.delete(u):activeUnivs.add(u); updateUI();render(); }
+function toggleType(t)        { activeTypes.has(t)?activeTypes.delete(t):activeTypes.add(t); updateUI();render(); }
+function toggleYear(y)        { activeYears.has(y)?activeYears.delete(y):activeYears.add(y); updateUI();render(); }
+function toggleTerm(t)        { activeTerms.has(t)?activeTerms.delete(t):activeTerms.add(t); updateUI();render(); }
+
+function toggleGenreParent(parent){
+  const subs = GENRE_TREE.find(t=>t.label===parent).subs;
+  const allActive = subs.every(s=>activeGenres.has(s));
+  subs.forEach(s=> allActive ? activeGenres.delete(s) : activeGenres.add(s));
+  updateUI();render();
+}
+
+function clearFilters(){
+  activeGenres.clear(); activeDiffs.clear(); activeUnivs.clear();
+  activeTypes.clear(); activeYears.clear(); activeTerms.clear();
+  showFavoritesOnly = false;
+  document.getElementById('fav-filter-btn').classList.remove('active');
+  document.querySelectorAll('.genre-children').forEach(c=>c.style.display='none');
+  document.querySelectorAll('.tree-arrow').forEach(a=>a.classList.remove('open'));
+  updateUI();render();
+}
+
+// ── UI状態更新 ────────────────────────────────────────────
+function updateUI(){
+  document.querySelectorAll('[data-genre]').forEach(b=>b.classList.toggle('active',activeGenres.has(b.dataset.genre)));
+  document.querySelectorAll('[data-diff]').forEach(b=>b.classList.toggle('active',activeDiffs.has(Number(b.dataset.diff))));
+  document.querySelectorAll('[data-univ]').forEach(b=>b.classList.toggle('active',activeUnivs.has(b.dataset.univ)));
+  document.querySelectorAll('[data-type]').forEach(b=>b.classList.toggle('active',activeTypes.has(b.dataset.type)));
+  document.querySelectorAll('[data-year]').forEach(b=>b.classList.toggle('active',activeYears.has(Number(b.dataset.year))));
+  document.querySelectorAll('[data-term]').forEach(b=>b.classList.toggle('active',activeTerms.has(b.dataset.term)));
+  GENRE_TREE.forEach(parent=>{
+    const hasActive = parent.subs.some(s=>activeGenres.has(s));
+    const btn = document.getElementById('gpb-'+parent.label);
+    if(btn) btn.classList.toggle('has-active', hasActive);
+  });
+}
+
+// ── バッジHTML ────────────────────────────────────────────
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function diffLabel(d){ return 'Lv.'+d; }
+function badgesHtml(p){
+  const parts=[];
+  parts.push(`<span class="badge badge-genre">${esc(p.genre)}</span>`);
+  parts.push(`<span class="badge badge-diff" data-d="${p.difficulty}">${diffLabel(p.difficulty)}</span>`);
+  if(p.type) parts.push(`<span class="badge badge-type-${p.type}">${p.type}</span>`);
+  if(p.term) parts.push(`<span class="badge badge-term-${p.term}">${p.term}</span>`);
+  if(p.university) parts.push(`<span class="badge badge-univ">${esc(p.university)}</span>`);
+  if(p.year) parts.push(`<span class="badge badge-year">${p.year}年</span>`);
+  return parts.join('');
+}
+
+// ── カード生成 ────────────────────────────────────────────
+function createCardElement(p){
+  const article = document.createElement('article');
+  article.className = 'problem-card';
+  article.onclick = ()=>openModal(p.id);
+
+  const isFav = favorites.has(p.id);
+  article.innerHTML = `
+    <div class="card-head">
+      <span class="problem-num">#${String(p.id).padStart(4,'0')}</span>
+      <div class="card-meta">
+        <div class="badge-row">${badgesHtml(p)}</div>
+      </div>
+      <button class="star-btn ${isFav?'active':''}"
+              data-id="${p.id}"
+              onclick="toggleFavorite(${p.id},event)"
+              title="お気に入り">${isFav?'★':'☆'}</button>
+    </div>
+    <div class="card-body">
+      <div class="section-label">問題</div>
+      <div class="problem-text math-render">${esc(p.problem)}</div>
+      <div class="solution-block" onclick="event.stopPropagation()">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          解説を見る <span class="btn-arrow">▾</span>
+        </button>
+        <div class="accordion-content">${esc(p.solution||'解説なし')}</div>
+      </div>
+    </div>`;
+  return article;
+}
+
+// ── アコーディオン ────────────────────────────────────────
+function toggleAccordion(btn){
+  const content = btn.nextElementSibling;
+  const open = !btn.classList.contains('open');
+  btn.classList.toggle('open',open);
+  content.classList.toggle('open',open);
+  // 開いた時だけKaTeX描画（一度のみ）
+  if(open && !content.dataset.rendered){
+    renderKaTeX(content);
+    content.dataset.rendered='1';
+  }
+}
+
+// ── 描画（仮想スクロール対応） ─────────────────────────────
+function render(){
+  renderedCount = 0;
+  currentFiltered = sortedFiltered();
+
+  document.getElementById('stats-text').textContent   = currentFiltered.length;
+  document.getElementById('header-count').textContent = currentFiltered.length+' 問';
+
+  const list = document.getElementById('problem-list');
+  list.innerHTML = '';
+
+  if(!currentFiltered.length){
+    list.innerHTML='<div class="no-results">条件に合う問題が見つかりませんでした</div>';
+    if(scrollObserver) scrollObserver.disconnect();
+    return;
+  }
+
+  appendBatch();
+}
+
+function appendBatch(){
+  if(renderedCount >= currentFiltered.length) return;
+
+  const list = document.getElementById('problem-list');
+  const end  = Math.min(renderedCount + BATCH_SIZE, currentFiltered.length);
+
+  const frag = document.createDocumentFragment();
+  for(let i=renderedCount; i<end; i++){
+    frag.appendChild(createCardElement(currentFiltered[i]));
+  }
+  list.appendChild(frag);
+
+  // 新しく追加した問題テキストのKaTeXだけ描画
+  list.querySelectorAll('.problem-text.math-render:not([data-rendered])').forEach(el=>{
+    renderKaTeX(el);
+    el.dataset.rendered='1';
+  });
+
+  renderedCount = end;
+  setupScrollObserver();
+}
+
+function setupScrollObserver(){
+  const sentinel = document.getElementById('scroll-sentinel');
+  if(!sentinel) return;
+
+  if(scrollObserver) scrollObserver.disconnect();
+
+  if(renderedCount < currentFiltered.length){
+    scrollObserver = new IntersectionObserver(entries=>{
+      if(entries[0].isIntersecting) appendBatch();
+    }, { rootMargin:'400px' });
+    scrollObserver.observe(sentinel);
+  }
+}
+
+// ── モーダル ──────────────────────────────────────────────
+function openModal(id){
+  const p = PROBLEMS.find(x=>x.id===id);
+  if(!p) return;
+
+  document.getElementById('modal-num').textContent   = '#'+String(p.id).padStart(4,'0');
+  document.getElementById('modal-badges').innerHTML  = badgesHtml(p);
+
+  const mProb = document.getElementById('modal-problem');
+  mProb.textContent = p.problem;
+  renderKaTeX(mProb);
+
+  // 解説アコーディオンをリセット（デフォルト閉じ）
+  const mSolWrap = document.getElementById('modal-solution-wrap');
+  const mSolBtn  = document.getElementById('modal-solution-btn');
+  const mSolCont = document.getElementById('modal-solution');
+  mSolBtn.classList.remove('open');
+  mSolCont.classList.remove('open');
+  delete mSolCont.dataset.rendered;
+
+  if(p.solution){
+    mSolWrap.style.display='block';
+    mSolCont.textContent = p.solution;
+  } else {
+    mSolWrap.style.display='none';
+  }
+
+  // お気に入りボタン
+  const mFavBtn = document.getElementById('modal-fav-btn');
+  mFavBtn.dataset.id = p.id;
+  applyStarState(mFavBtn, p.id);
+  mFavBtn.onclick = (e) => toggleFavorite(p.id, e);
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function toggleModalSolution(){
+  const btn  = document.getElementById('modal-solution-btn');
+  const cont = document.getElementById('modal-solution');
+  const open = !btn.classList.contains('open');
+  btn.classList.toggle('open',open);
+  cont.classList.toggle('open',open);
+  if(open && !cont.dataset.rendered){
+    renderKaTeX(cont);
+    cont.dataset.rendered='1';
+  }
+}
+
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function handleOverlayClick(e){
+  if(e.target===document.getElementById('modal-overlay')) closeModal();
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+// ── ソート ────────────────────────────────────────────────
+function setSortKey(key){
+  sortKey = key;
+  document.querySelectorAll('[data-sort-key]').forEach(b=>b.classList.toggle('active', b.dataset.sortKey===key));
+  render();
+}
+function setSortDir(dir){
+  sortDir = dir;
+  document.querySelectorAll('[data-sort-dir]').forEach(b=>b.classList.toggle('active', b.dataset.sortDir===dir));
+  render();
+}
+
+// ── モバイルソートトグル ──────────────────────────────────
+function toggleMobileSort(){
+  if(window.innerWidth > 760) return;
+  const wrap  = document.getElementById('sort-sections-wrap');
+  const arrow = document.getElementById('mobile-sort-arrow');
+  const isOpen = wrap.classList.toggle('open');
+  arrow.classList.toggle('open', isOpen);
+}
+
+// ── サイドバー構築 ────────────────────────────────────────
+function buildSidebar(){
+  // ジャンルツリー
+  const tree = document.getElementById('genre-tree');
+  GENRE_TREE.forEach(parent => {
+    const wrap = document.createElement('div');
+    wrap.className = 'genre-parent';
+    const pid = 'gc-'+parent.label;
+    wrap.innerHTML = `
+      <button class="genre-parent-btn" id="gpb-${parent.label}" onclick="toggleTreeOpen('${parent.label}')">
+        <span>${parent.label}</span>
+        <span class="tree-arrow" id="arrow-${parent.label}">▶</span>
+      </button>
+      <div class="genre-children" id="${pid}" style="display:none">
+        ${parent.subs.map(s=>`<button class="chip" data-genre="${s}" onclick="toggleGenre('${s}')">${s}</button>`).join('')}
+      </div>`;
+    tree.appendChild(wrap);
+  });
+
+  // 難易度チップ
+  const dc = document.getElementById('diff-chips');
+  for(let i=1;i<=10;i++){
+    const b = document.createElement('button');
+    b.className='chip diff-chip'; b.dataset.diff=i; b.textContent=i;
+    b.onclick=()=>toggleDiff(i);
+    dc.appendChild(b);
+  }
+
+  // 大学チップ
+  const uc = document.getElementById('univ-chips');
+  UNIVERSITIES.forEach(u=>{
+    const b = document.createElement('button');
+    b.className='chip'; b.dataset.univ=u; b.textContent=u;
+    b.onclick=()=>toggleUniv(u);
+    uc.appendChild(b);
+  });
+
+  // 年度チップ（データから生成）
+  const years = [...new Set(PROBLEMS.map(p=>p.year).filter(Boolean))].sort((a,b)=>b-a);
+  const yc = document.getElementById('year-chips');
+  if(years.length){
+    years.forEach(y=>{
+      const b = document.createElement('button');
+      b.className='chip'; b.dataset.year=y; b.textContent=y;
+      b.onclick=()=>toggleYear(y);
+      yc.appendChild(b);
+    });
+  } else {
+    yc.innerHTML='<span style="font-size:.75rem;color:var(--ink-faint)">データなし</span>';
+  }
+}
+
+function toggleTreeOpen(label){
+  const children = document.getElementById('gc-'+label);
+  const arrow    = document.getElementById('arrow-'+label);
+  const isOpen   = children.style.display !== 'none';
+  children.style.display = isOpen ? 'none' : 'flex';
+  arrow.classList.toggle('open', !isOpen);
+}
+
+// ── モバイルフィルタートグル ──────────────────────────────
+function toggleMobileFilter(){
+  if(window.innerWidth > 760) return;
+  const wrap  = document.getElementById('filter-sections-wrap');
+  const arrow = document.getElementById('mobile-filter-arrow');
+  const isOpen = wrap.classList.toggle('open');
+  arrow.classList.toggle('open', isOpen);
+}
+
+// ── チャンクファイルの動的読み込み ───────────────────────────
+async function loadProblemChunks(){
+  window.PROBLEMS_DATA = [];
+
+  if(!PROBLEM_CHUNK_FILES.length){
+    console.warn('PROBLEM_CHUNK_FILES が空です。problems/ フォルダにチャンクを追加してください。');
+    return;
+  }
+
+  const loadScript = src => new Promise(resolve => {
+    const s = document.createElement('script');
+    s.src  = src + '?v=' + Date.now(); // キャッシュバスター（開発時）
+    s.onload  = resolve;
+    s.onerror = () => { console.warn('読み込み失敗:', src); resolve(); };
+    document.head.appendChild(s);
+  });
+
+  // ファイルを順番に読み込む
+  for(const file of PROBLEM_CHUNK_FILES){
+    document.getElementById('loading-text').textContent = `読み込み中: ${file}`;
+    await loadScript(file);
+  }
+
+  PROBLEMS = window.PROBLEMS_DATA || [];
+}
+
+// ── 初期化 ────────────────────────────────────────────────
+async function init(){
+  await loadProblemChunks();
+
+  // ローディング画面を消す
+  document.getElementById('loading-overlay').classList.add('hidden');
+
+  buildSidebar();
+  render();
+}
+
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
