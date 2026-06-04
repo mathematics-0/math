@@ -21,7 +21,7 @@
 (window.PROBLEMS_DATA = window.PROBLEMS_DATA || []).push(
 
   {
-    id: 1,
+    id: 4,
     title: "円周率",
     genre: "三角関数",
     difficulty: 2,
@@ -57,15 +57,15 @@
     solution: `$m$ が $5$ 以下であることは、 $3$ 乗の展開公式より導ける。あとは、合同式を使うなり、全て代入するなりすればよい。`,
   },
   {
-    id: 4,
+    id: 1,
     title: "数列の漸化式と一般項",
     genre: "数列",
-    difficulty: 5,
+    difficulty: 10,
     type: "共通",
-    university: "名大",
-    year: 2023,
-    term: "後期",
-    problem: `数列 $\\{a_n\\}$ が $a_1 = 1$、$a_{n+1} = 3a_n + 2^n$ を満たすとき、一般項 $a_n$ を求めよ。`,
+    university: "東大",
+    year: 1961,
+    term: "共通",
+    problem: `点 $O$ で $60$ °の角をなす半直線 $OX$ , $OY$ と∠ $XOY$ の二等分線 $OZ$ があり、 $OX$ , $OY$ 上に $O$ から $1$ cmの距離にそれぞれ点 $A$ 、 $B$ がある、いま動点 $P$ , $Q$ , $R$ がそれぞれ $A$ , $O$ , $B$ から同時に出発して半直線 $OX$ , $OZ$ , $OY$ 上をそれぞれ毎秒 $1$ cm,√3cm, $2$ cmの速さでOから遠ざかる。( $1$ ) $3$ 点 $P$ , $Q$ , $R$ が一直線上にくるまでの時間および( $2$ ) △ $PQR$ の面積が△ $AOB$ の面積に等しくなるまでの時間を求めよ。`,
     solution: `両辺を $3^{n+1}$ で割って $b_n = \\dfrac{a_n}{3^n}$ とおく。\n\n$$b_{n+1} = \\frac{a_{n+1}}{3^{n+1}} = \\frac{3a_n+2^n}{3^{n+1}} = \\frac{a_n}{3^n} + \\frac{1}{3}\\cdot\\left(\\frac{2}{3}\\right)^n = b_n + \\frac{1}{3}\\left(\\frac{2}{3}\\right)^n$$\n\n累和すると\n$$b_n = b_1 + \\sum_{k=1}^{n-1}\\frac{1}{3}\\left(\\frac{2}{3}\\right)^k = \\frac{1}{3} + \\frac{1}{3}\\cdot\\frac{\\frac{2}{3}\\left(1-\\left(\\frac{2}{3}\\right)^{n-1}\\right)}{1-\\frac{2}{3}}$$\n\n整理すると $b_n = 2\\left(\\frac{2}{3}\\right)^n - 1$、よって\n\n$$a_n = 3^n b_n = 2\\cdot 2^n - 3^n = \\boxed{2^{n+1}-3^n}$$`,
   },
   {
