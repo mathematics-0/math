@@ -59,7 +59,7 @@
   {
     id: 1,
     title: "数列の漸化式と一般項",
-    genre: "数列",
+    genre: "ベクトル",
     difficulty: 10,
     type: "共通",
     university: "東大",
