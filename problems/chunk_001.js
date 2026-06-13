@@ -21,7 +21,7 @@
 (window.PROBLEMS_DATA = window.PROBLEMS_DATA || []).push(
 
   {
-    id: 4,
+    id: 7,
     title: "円周率",
     genre: "三角関数",
     difficulty: 2,
@@ -72,7 +72,7 @@
     id: 2,
     title: "微分と極値・グラフ",
     genre: "微分法",
-    difficulty: 6,
+    difficulty: 10,
     type: "共通",
     university: "東大",
     year: 1961,
@@ -93,15 +93,15 @@
     solution: ``,
   },
   {
-    id: 7,
+    id: 4,
     title: "積分と面積",
-    genre: "積分法",
-    difficulty: 6,
-    type: "理系",
-    university: "京大",
-    year: 2024,
-    term: "前期",
-    problem: `曲線 $C: y = x^3 - 3x$ と直線 $\\ell: y = kx$（$k$ は実数）が 3 点で交わるとき、$k$ の範囲を求め、$C$ と $\\ell$ で囲まれた 2 つの図形の面積の和 $S(k)$ を求めよ。`,
+    genre: "ベクトル",
+    difficulty: 10,
+    type: "共通",
+    university: "東大",
+    year: 1961,
+    term: "共通",
+    problem: `△ $ABC$ の $3$ 辺 $BC$ , $CA$ , $AB$ の上にそれぞれ点 $L$ 、$M$ 、$N$ をとり \n\n$$BL / LC = CM / MA = AN / NB = \frac{1}{2} +\\cdots$$となるようにする。 $AL$ と $CN$ の交点を $P$ 、 $AL$ と $BM$ の交点を $Q$ 、$BM$ と $CN$ の交点を $R$ とするとき、△ $PQR$ の面積と△ $ABC$ の面積との比を求めよ。`,
     solution: `交点：$x^3-3x=kx$ より $x(x^2-(3+k))=0$。\n3 点で交わる条件は $3+k>0$、すなわち $k>-3$。また $k\\ne0$ も必要（$k=0$ は接する）ので $-3<k<0$。\n\n$\\alpha=\\sqrt{3+k}$ とおくと交点は $x=0,\\pm\\alpha$。\n\n$$S(k) = 2\\int_0^{\\alpha}\\bigl|(x^3-3x)-kx\\bigr|\\,dx = 2\\int_0^{\\alpha}(x^3-(3+k)x)\\,dx$$\n\n（$0\\le x\\le\\alpha$ では $C$ が $\\ell$ の下側なので絶対値を外すと符号が逆）\n\n$$= 2\\left[\\frac{x^4}{4}-\\frac{3+k}{2}x^2\\right]_0^{\\alpha} = 2\\left(\\frac{\\alpha^4}{4}-\\frac{\\alpha^2(3+k)}{2}\\right) = \\frac{\\alpha^4}{2}-\\alpha^2(3+k)$$\n\n$\\alpha^2=3+k$ を代入すると\n$$S(k) = \\frac{(3+k)^2}{2}-(3+k)^2 = -\\frac{(3+k)^2}{2}$$\n\n符号を修正して $S(k) = \\dfrac{(3+k)^2}{2}$。`,
   },
   {
